@@ -138,7 +138,7 @@ export function render(canvas, ctx, persistent, transient) {
 
     // Label
     const labelAlpha = 0.55 + flash * 0.45;
-    const fontSize = (zw < 35 || zh < 25) ? 9 : 11;
+    const fontSize = (zw < 35 || zh < 25) ? 18 : 22;
     ctx.fillStyle = `oklch(1 0 0 / ${labelAlpha})`;
     ctx.font = `450 ${fontSize}px 'SF Pro Display', -apple-system, sans-serif`;
     ctx.textAlign = 'center';
