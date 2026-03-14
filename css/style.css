@@ -217,8 +217,10 @@ body {
 }
 
 .section-icon {
-  font-size: 22px;
-  opacity: 0.5;
+  width: 22px;
+  height: 22px;
+  opacity: 0.45;
+  flex-shrink: 0;
 }
 
 .section-title:hover {
