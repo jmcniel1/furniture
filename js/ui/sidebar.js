@@ -12,7 +12,7 @@ export function setupSidebar(persistent, transient, callbacks) {
   bindSlider('speed', persistent, 'speed', 5, 100, () => {
     transient.balls = createBalls(persistent);
   });
-  bindSlider('ballCount', persistent, 'ballCount', 1, 16, () => {
+  bindSlider('ballCount', persistent, 'ballCount', 0, 16, () => {
     transient.balls = createBalls(persistent);
   });
   bindSlider('ballSize', persistent, 'ballSize', 3, 18);
@@ -59,6 +59,7 @@ export function setupSidebar(persistent, transient, callbacks) {
 
   bindToggle('arpPendulum', persistent, 'arpPendulum');
   bindSlider('arpRatchet', persistent, 'arpRatchet', 0, 16);
+  bindToggle('arpUseRandomization', persistent, 'arpUseRandomization');
 
   // MIDI Output
   const midiDeviceSel = document.getElementById('select-midiDevice');
@@ -151,6 +152,7 @@ export function setupSidebar(persistent, transient, callbacks) {
   bindSlider('randomOctaveChance', persistent, 'randomOctaveChance', 0, 100);
   bindSlider('randomOctaveAmount', persistent, 'randomOctaveAmount', 1, 3);
   bindSlider('randomVelocity', persistent, 'randomVelocity', 0, 100);
+  bindSlider('velocityFloor', persistent, 'velocityFloor', 0, 100);
 
   document.getElementById('btn-quantize').addEventListener('click', () => {
     for (let i = 0; i < persistent.zones.length; i++) {

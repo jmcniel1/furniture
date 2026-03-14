@@ -1,4 +1,5 @@
 #include "Arp.h"
+#include "Scales.h"
 #include <algorithm>
 #include <cmath>
 
@@ -175,7 +176,45 @@ std::vector<ArpEngine::ArpEvent> ArpEngine::processBlock(
             if (zoneIndex >= 0 && zoneIndex < static_cast<int>(persistent.zones.size()))
             {
                 auto& zone = persistent.zones[zoneIndex];
-                events.push_back({ zone.midi, 0.8f, zoneIndex, s });
+                int outMidi = zone.midi;
+                float outVelocity = 0.8f;
+
+                if (persistent.arpUseRandomization)
+                {
+                    auto& prng = transient.prng;
+
+                    // Random pitch
+                    if (persistent.randomPitch > 0 && prng() * 100.0f < persistent.randomPitch)
+                    {
+                        const auto& scaleNameStr = Scales::getAllScales()[persistent.scaleName].name;
+                        auto scaleNotes = Scales::getScaleNotesInOctave(outMidi, persistent.scaleRoot, scaleNameStr);
+                        if (!scaleNotes.empty())
+                            outMidi = scaleNotes[static_cast<int>(prng() * scaleNotes.size()) % scaleNotes.size()];
+                    }
+
+                    // Random octave
+                    if (persistent.randomOctaveChance > 0 && prng() * 100.0f < persistent.randomOctaveChance)
+                    {
+                        int maxShift = persistent.randomOctaveAmount;
+                        int shift = static_cast<int>(prng() * maxShift * 2 + 1) - maxShift;
+                        if (shift == 0) shift = prng() < 0.5f ? -1 : 1;
+                        int shifted = outMidi + shift * 12;
+                        if (shifted >= 12 && shifted <= 120) outMidi = shifted;
+                    }
+
+                    // Random velocity
+                    if (persistent.randomVelocity > 0)
+                    {
+                        float velRange = persistent.randomVelocity / 100.0f;
+                        outVelocity = outVelocity * (1.0f - velRange) + prng() * outVelocity * velRange * 2.0f;
+                    }
+                }
+
+                // Apply velocity floor
+                float velFloor = persistent.velocityFloor / 100.0f;
+                outVelocity = std::clamp(outVelocity, velFloor, 1.0f);
+
+                events.push_back({ outMidi, outVelocity, zoneIndex, s });
 
                 // Flash
                 if (zoneIndex < static_cast<int>(transient.zoneFlash.size()))

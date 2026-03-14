@@ -38,7 +38,7 @@ struct PersistentState
     int bounce       = 90;    // 50-100
     int friction     = 4;     // 0-50
     int speed        = 40;    // 5-100
-    int ballCount    = 2;     // 1-16
+    int ballCount    = 2;     // 0-16
     int ballSize     = 7;     // 3-18
     int minEnergy    = 25;    // 0-80
     bool solidZones  = true;
@@ -59,6 +59,7 @@ struct PersistentState
     int randomOctaveChance = 0;   // 0-100
     int randomOctaveAmount = 1;   // 1-3
     int randomVelocity     = 0;   // 0-100
+    int velocityFloor      = 10;  // 0-100 minimum velocity
 
     // Arpeggiator
     bool arpEnabled    = false;
@@ -68,6 +69,7 @@ struct PersistentState
     int  arpPlayMode   = 1;        // index into ArpPlayMode enum (default Up)
     bool arpPendulum   = false;
     int  arpRatchet    = 0;        // 0-16
+    bool arpUseRandomization = false;
 
     std::vector<Zone> zones;
 };

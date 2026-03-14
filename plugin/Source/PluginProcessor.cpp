@@ -22,7 +22,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout FurnitureProcessor::createPa
     params.push_back(std::make_unique<juce::AudioParameterInt>("bounce",     "Bounce",      50, 100, 90));
     params.push_back(std::make_unique<juce::AudioParameterInt>("friction",   "Friction",    0, 50, 4));
     params.push_back(std::make_unique<juce::AudioParameterInt>("speed",      "Speed",       5, 100, 40));
-    params.push_back(std::make_unique<juce::AudioParameterInt>("ballCount",  "Balls",       1, 16, 2));
+    params.push_back(std::make_unique<juce::AudioParameterInt>("ballCount",  "Balls",       0, 16, 2));
     params.push_back(std::make_unique<juce::AudioParameterInt>("ballSize",   "Ball Size",   3, 18, 7));
     params.push_back(std::make_unique<juce::AudioParameterInt>("minEnergy",  "Min Energy",  0, 80, 25));
     params.push_back(std::make_unique<juce::AudioParameterInt>("momentum",   "Momentum",    0, 100, 0));
@@ -43,6 +43,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout FurnitureProcessor::createPa
     params.push_back(std::make_unique<juce::AudioParameterInt>("randomOctaveChance",  "Oct Chance",     0, 100, 0));
     params.push_back(std::make_unique<juce::AudioParameterInt>("randomOctaveAmount",  "Oct Amount",     1, 3, 1));
     params.push_back(std::make_unique<juce::AudioParameterInt>("randomVelocity",      "Rnd Velocity",   0, 100, 0));
+    params.push_back(std::make_unique<juce::AudioParameterInt>("velocityFloor",       "Vel Floor",      0, 100, 10));
 
     // Arpeggiator
     params.push_back(std::make_unique<juce::AudioParameterBool>("arpEnabled",   "Arp",          false));
@@ -52,6 +53,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout FurnitureProcessor::createPa
     params.push_back(std::make_unique<juce::AudioParameterInt>("arpPlayMode",   "Arp Mode",     0, 7, 1));   // default Up
     params.push_back(std::make_unique<juce::AudioParameterBool>("arpPendulum",  "Arp Pendulum", false));
     params.push_back(std::make_unique<juce::AudioParameterInt>("arpRatchet",    "Arp Ratchet",  0, 16, 0));
+    params.push_back(std::make_unique<juce::AudioParameterBool>("arpUseRandomization", "Arp Note Var", false));
 
     return { params.begin(), params.end() };
 }
@@ -79,6 +81,7 @@ void FurnitureProcessor::pullParametersFromAPVTS()
     persistentState.randomOctaveChance = static_cast<int>(*apvts.getRawParameterValue("randomOctaveChance"));
     persistentState.randomOctaveAmount = static_cast<int>(*apvts.getRawParameterValue("randomOctaveAmount"));
     persistentState.randomVelocity     = static_cast<int>(*apvts.getRawParameterValue("randomVelocity"));
+    persistentState.velocityFloor      = static_cast<int>(*apvts.getRawParameterValue("velocityFloor"));
 
     // Arp
     persistentState.arpEnabled   = *apvts.getRawParameterValue("arpEnabled") > 0.5f;
@@ -88,6 +91,7 @@ void FurnitureProcessor::pullParametersFromAPVTS()
     persistentState.arpPlayMode  = static_cast<int>(*apvts.getRawParameterValue("arpPlayMode"));
     persistentState.arpPendulum  = *apvts.getRawParameterValue("arpPendulum") > 0.5f;
     persistentState.arpRatchet   = static_cast<int>(*apvts.getRawParameterValue("arpRatchet"));
+    persistentState.arpUseRandomization = *apvts.getRawParameterValue("arpUseRandomization") > 0.5f;
 }
 
 void FurnitureProcessor::prepareToPlay(double sampleRate, int /*samplesPerBlock*/)

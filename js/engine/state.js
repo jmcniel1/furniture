@@ -51,6 +51,7 @@ export function createDefaultPersistentState() {
     randomOctaveChance: 0,     // 0-100% probability of octave shift
     randomOctaveAmount: 1,     // 1-3 max octaves deviation
     randomVelocity: 0,         // 0-100% random velocity variation
+    velocityFloor: 10,         // 0-100 minimum velocity (mapped to 0-1)
 
     // Ball jitter — random velocity perturbation per tick
     jitter: 0,                 // 0-100
@@ -68,6 +69,7 @@ export function createDefaultPersistentState() {
     arpPlayMode: 'up',        // first-placed, up, down, random, left-right, right-left, vertical-up, vertical-down
     arpPendulum: false,        // true = bounce back and forth, false = loop
     arpRatchet: 0,             // 0-16 extra repeats per step
+    arpUseRandomization: false, // apply note variation (pitch/octave/velocity) to arp
     bpm: 120,                  // tempo (web-only; VST gets this from host)
 
     zones: defaultZones,

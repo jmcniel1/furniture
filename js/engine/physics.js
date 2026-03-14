@@ -168,7 +168,8 @@ export function tick(persistent, transient, dt) {
         if (randomVelocity > 0) {
           const velRange = (randomVelocity / 100);
           outVelocity = velocity * (1 - velRange) + prng() * velocity * velRange * 2;
-          outVelocity = Math.min(1.0, Math.max(0.1, outVelocity));
+          const floor = (persistent.velocityFloor || 0) / 100;
+          outVelocity = Math.min(1.0, Math.max(floor, outVelocity));
         }
 
         events.push({

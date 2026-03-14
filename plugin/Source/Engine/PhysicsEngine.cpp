@@ -170,7 +170,8 @@ std::vector<PhysicsEvent> PhysicsEngine::tick(PersistentState& persistent,
                 {
                     float velRange = persistent.randomVelocity / 100.0f;
                     outVelocity = velocity * (1.0f - velRange) + prng() * velocity * velRange * 2.0f;
-                    outVelocity = std::clamp(outVelocity, 0.1f, 1.0f);
+                    float velFloor = persistent.velocityFloor / 100.0f;
+                    outVelocity = std::clamp(outVelocity, velFloor, 1.0f);
                 }
 
                 events.push_back({ outMidi, outVelocity, static_cast<int>(z) });

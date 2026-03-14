@@ -1,6 +1,8 @@
 // Arpeggiator engine — PURE, no DOM, no browser APIs
 // Cycles through zones based on play mode, timing, and ratchet settings
 
+import { getScaleNotesInOctave } from './scales.js';
+
 // Note divisions as fractions of a whole note (4 beats)
 const DIVISIONS = {
   '1/64':  1/16,
@@ -232,11 +234,45 @@ export function tickArp(persistent, transient, currentTimeMs) {
   const zone = persistent.zones[zoneIndex];
   if (!zone) return events;
 
-  // Generate note event
+  // Generate note event with optional randomization
+  let outMidi = zone.midi;
+  let outVelocity = 0.8;
+
+  if (persistent.arpUseRandomization) {
+    const prng = transient.prng;
+
+    // Random pitch
+    if (persistent.randomPitch > 0 && prng() * 100 < persistent.randomPitch) {
+      const scaleNotes = getScaleNotesInOctave(outMidi, persistent.scaleRoot, persistent.scaleName);
+      if (scaleNotes.length > 0) {
+        outMidi = scaleNotes[Math.floor(prng() * scaleNotes.length)];
+      }
+    }
+
+    // Random octave
+    if (persistent.randomOctaveChance > 0 && prng() * 100 < persistent.randomOctaveChance) {
+      const maxShift = persistent.randomOctaveAmount;
+      let shift = Math.floor(prng() * maxShift * 2 + 1) - maxShift;
+      if (shift === 0) shift = prng() < 0.5 ? -1 : 1;
+      const shifted = outMidi + shift * 12;
+      if (shifted >= 12 && shifted <= 120) outMidi = shifted;
+    }
+
+    // Random velocity
+    if (persistent.randomVelocity > 0) {
+      const velRange = persistent.randomVelocity / 100;
+      outVelocity = outVelocity * (1 - velRange) + prng() * outVelocity * velRange * 2;
+    }
+  }
+
+  // Apply velocity floor
+  const floor = (persistent.velocityFloor || 0) / 100;
+  outVelocity = Math.max(floor, Math.min(1.0, outVelocity));
+
   events.push({
     type: 'noteOn',
-    midi: zone.midi,
-    velocity: 0.8,
+    midi: outMidi,
+    velocity: outVelocity,
     zoneIndex: zoneIndex,
   });
 
