@@ -45,21 +45,22 @@ body {
   cursor: crosshair;
 }
 
-/* Zone editor strip */
+/* Zone editor — floating inset panel */
 #zone-editor {
   display: none;
   position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  bottom: 10px;
+  left: 10px;
+  right: 10px;
   z-index: 10;
   align-items: center;
-  gap: 16px;
-  padding: 14px 20px;
-  background: oklch(0.12 0 0 / 0.9);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-top: 1px solid oklch(1 0 0 / 0.08);
+  gap: 6px;
+  padding: 8px;
+  background: oklch(0.16 0 0);
+  border: 1px solid oklch(1 0 0 / 0.06);
+  border-radius: 18px;
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
   flex-wrap: wrap;
 }
 
@@ -67,63 +68,91 @@ body {
   display: flex;
 }
 
-#zone-editor label {
+#zone-name {
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  font-size: 14px;
+  font-weight: 600;
+  color: oklch(0.9 0.15 105);
+  min-width: 32px;
+  padding: 0 8px;
+}
+
+/* Grouped controls inside the bar */
+#zone-editor > label {
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 13px;
+  font-size: 11px;
   color: oklch(1 0 0 / 0.5);
-}
-
-#zone-name {
-  font-family: 'SF Mono', 'Fira Code', monospace;
-  font-size: 16px;
-  font-weight: 600;
-  color: oklch(0.9 0.15 105);
-  min-width: 40px;
-}
-
-#zone-editor select,
-#zone-editor input[type="range"] {
-  background: oklch(1 0 0 / 0.08);
-  color: oklch(0.88 0 0);
-  border: 1px solid oklch(1 0 0 / 0.1);
-  border-radius: 8px;
-  padding: 4px 8px;
-  font-size: 13px;
+  background: oklch(1 0 0 / 0.04);
+  padding: 6px 10px;
+  border-radius: 10px;
+  height: 34px;
 }
 
 #zone-editor select {
+  background: oklch(1 0 0 / 0.06);
+  color: oklch(0.85 0 0);
+  border: 1px solid oklch(1 0 0 / 0.06);
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-size: 11px;
   cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23888' d='M3 4.5L6 8l3-3.5H3z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 6px center;
+  padding-right: 20px;
 }
 
-#zone-editor input[type="range"] {
-  width: 100px;
+/* Zone editor sliders — same style as sidebar */
+.zone-slider {
+  width: 120px;
+  height: 34px !important;
+  border-radius: 10px !important;
+  background: oklch(1 0 0 / 0.04) !important;
+  flex-shrink: 0;
 }
 
 #zone-editor button {
-  padding: 6px 14px;
-  font-size: 13px;
-  background: oklch(1 0 0 / 0.08);
-  color: oklch(0.85 0 0);
-  border: 1px solid oklch(1 0 0 / 0.1);
-  border-radius: 8px;
+  padding: 7px 14px;
+  font-size: 11px;
+  font-weight: 500;
+  background: oklch(1 0 0 / 0.04);
+  color: oklch(1 0 0 / 0.5);
+  border: none;
+  border-radius: 100px;
   cursor: pointer;
-  transition: background 0.15s;
+  transition: background 0.15s, color 0.15s;
+  height: 34px;
 }
 
 #zone-editor button:hover {
-  background: oklch(1 0 0 / 0.14);
+  background: oklch(1 0 0 / 0.08);
+  color: oklch(1 0 0 / 0.7);
 }
 
 #zone-duplicate {
-  color: oklch(0.75 0.14 170);
-  border-color: oklch(0.75 0.14 170 / 0.3);
+  background: oklch(0.75 0.14 170);
+  color: oklch(0.15 0 0 / 0.85);
+}
+
+#zone-duplicate:hover {
+  background: oklch(0.8 0.13 170);
 }
 
 #zone-delete {
-  color: oklch(0.6 0.22 25);
-  border-color: oklch(0.6 0.22 25 / 0.3);
+  background: oklch(0.55 0.2 25 / 0.2);
+  color: oklch(0.7 0.18 25);
+}
+
+#zone-delete:hover {
+  background: oklch(0.55 0.2 25 / 0.35);
+}
+
+#zone-close {
+  margin-left: auto;
 }
 
 /* ═══════════════════════════════════════════

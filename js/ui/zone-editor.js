@@ -3,6 +3,27 @@ import { NOTE_NAMES, nameToMidi, midiToName } from '../engine/scales.js';
 
 let currentZoneIndex = null;
 
+function initZoneFill(slider) {
+  const row = slider.closest('.control-row');
+  if (!row || row.querySelector('.slider-fill')) return;
+  const fill = document.createElement('div');
+  fill.className = 'slider-fill';
+  row.insertBefore(fill, row.firstChild);
+  updateZoneFill(slider);
+}
+
+function updateZoneFill(slider) {
+  const row = slider.closest('.control-row');
+  if (!row) return;
+  const fill = row.querySelector('.slider-fill');
+  if (!fill) return;
+  const pct = (slider.value - slider.min) / (slider.max - slider.min);
+  fill.style.width = 'calc(' + (pct * 100) + '% - 4px)';
+  fill.style.minWidth = pct > 0 ? '22px' : '0';
+  const valSpan = row.querySelector('.val');
+  if (valSpan) valSpan.textContent = slider.value;
+}
+
 export function showEditor(persistent, transient, zoneIndex, callbacks) {
   currentZoneIndex = zoneIndex;
   const panel = document.getElementById('zone-editor');
@@ -14,8 +35,12 @@ export function showEditor(persistent, transient, zoneIndex, callbacks) {
   document.getElementById('zone-name').textContent = midiToName(zone.midi);
   document.getElementById('zone-note').value = zone.midi % 12;
   document.getElementById('zone-octave').value = octave;
-  document.getElementById('zone-width').value = Math.round((zone.hw / 0.08) * 100);
-  document.getElementById('zone-height').value = Math.round((zone.hh / 0.08) * 100);
+  const wSlider = document.getElementById('zone-width');
+  const hSlider = document.getElementById('zone-height');
+  wSlider.value = Math.round((zone.hw / 0.08) * 100);
+  hSlider.value = Math.round((zone.hh / 0.08) * 100);
+  updateZoneFill(wSlider);
+  updateZoneFill(hSlider);
 }
 
 export function hideEditor(transient) {
@@ -38,6 +63,10 @@ export function setupEditor(persistent, transient, callbacks) {
   const deleteBtn = document.getElementById('zone-delete');
   const closeBtn = document.getElementById('zone-close');
 
+  // Init slider fills
+  initZoneFill(widthSlider);
+  initZoneFill(heightSlider);
+
   noteSelect.addEventListener('change', () => {
     if (currentZoneIndex === null) return;
     const zone = persistent.zones[currentZoneIndex];
@@ -57,11 +86,13 @@ export function setupEditor(persistent, transient, callbacks) {
   widthSlider.addEventListener('input', () => {
     if (currentZoneIndex === null) return;
     persistent.zones[currentZoneIndex].hw = (Number(widthSlider.value) / 100) * 0.08;
+    updateZoneFill(widthSlider);
   });
 
   heightSlider.addEventListener('input', () => {
     if (currentZoneIndex === null) return;
     persistent.zones[currentZoneIndex].hh = (Number(heightSlider.value) / 100) * 0.08;
+    updateZoneFill(heightSlider);
   });
 
   const dupeBtn = document.getElementById('zone-duplicate');

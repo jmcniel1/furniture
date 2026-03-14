@@ -44,8 +44,16 @@
           </select>
         </label>
 
-        <label>W <input type="range" id="zone-width" min="10" max="100" value="50"></label>
-        <label>H <input type="range" id="zone-height" min="10" max="100" value="50"></label>
+        <div class="control-row zone-slider">
+          <label>W</label>
+          <input type="range" id="zone-width" min="10" max="100" value="50">
+          <span class="val" id="val-zone-width">50</span>
+        </div>
+        <div class="control-row zone-slider">
+          <label>H</label>
+          <input type="range" id="zone-height" min="10" max="100" value="50">
+          <span class="val" id="val-zone-height">50</span>
+        </div>
 
         <button id="zone-duplicate">Duplicate</button>
         <button id="zone-delete">Delete</button>
