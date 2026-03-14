@@ -119,6 +119,39 @@ export function setupSidebar(persistent, transient, callbacks) {
   bindSlider('sustain', synthParams, 'sustain', 0, 100);
   bindSlider('release', synthParams, 'release', 1, 3000);
 
+  // Randomize synth
+  function randomizeSynth() {
+    const waveforms = ['sawtooth', 'square', 'triangle', 'sine'];
+    synthParams.waveform = waveforms[Math.floor(Math.random() * waveforms.length)];
+    waveformSel.value = synthParams.waveform;
+
+    const randInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+
+    synthParams.voices = randInt(1, 8);
+    synthParams.filterCutoff = randInt(200, 8000);
+    synthParams.filterRes = randInt(5, 120) / 10;
+    synthParams.filterEnvAmt = randInt(0, 6000);
+    synthParams.attack = randInt(1, 800);
+    synthParams.decay = randInt(30, 1200);
+    synthParams.sustain = randInt(0, 80);
+    synthParams.release = randInt(50, 2000);
+
+    // Update all slider UIs
+    syncSlider('synthVoices', synthParams.voices);
+    syncSlider('filterCutoff', synthParams.filterCutoff);
+    syncSliderFloat('filterRes', synthParams.filterRes, 10);
+    syncSlider('filterEnvAmt', synthParams.filterEnvAmt);
+    syncSlider('attack', synthParams.attack);
+    syncSlider('decay', synthParams.decay);
+    syncSlider('sustain', synthParams.sustain);
+    syncSlider('release', synthParams.release);
+  }
+
+  document.getElementById('btn-rand-synth').addEventListener('click', randomizeSynth);
+
+  // Randomize on load
+  randomizeSynth();
+
   // Performance
   bindSlider('gateTime', persistent, 'gateTime', 20, 2000);
 
@@ -268,6 +301,24 @@ function updateArpSyncVisibility(persistent) {
   const rateRow = document.getElementById('row-arpRateMs');
   if (divRow) divRow.style.display = persistent.arpSync ? '' : 'none';
   if (rateRow) rateRow.style.display = persistent.arpSync ? 'none' : '';
+}
+
+function syncSlider(id, value) {
+  const slider = document.getElementById('slider-' + id);
+  const readout = document.getElementById('val-' + id);
+  if (!slider) return;
+  slider.value = value;
+  if (readout) readout.textContent = value;
+  updateSliderFill(slider);
+}
+
+function syncSliderFloat(id, value, divisor) {
+  const slider = document.getElementById('slider-' + id);
+  const readout = document.getElementById('val-' + id);
+  if (!slider) return;
+  slider.value = Math.round(value * divisor);
+  if (readout) readout.textContent = value.toFixed(1);
+  updateSliderFill(slider);
 }
 
 function bindSelect(id, obj, key) {
