@@ -5,6 +5,27 @@ import { nameToMidi } from './scales.js';
 import { createPRNG } from './prng.js';
 import { createArpState } from './arp.js';
 
+// OKLCH zone colors: [lightness, chroma, hue]
+export const ZONE_COLORS_LCH = [
+  [0.58, 0.22, 25],   // red
+  [0.56, 0.20, 42],   // burnt orange
+  [0.74, 0.18, 75],   // amber
+  [0.60, 0.20, 135],  // green
+  [0.62, 0.15, 165],  // teal
+  [0.58, 0.16, 245],  // blue
+  [0.46, 0.22, 285],  // indigo
+  [0.58, 0.20, 345],  // pink
+  [0.72, 0.13, 170],  // mint
+  [0.72, 0.10, 240],  // light blue
+  [0.70, 0.12, 290],  // lavender
+  [0.72, 0.14, 40],   // peach
+  [0.70, 0.14, 350],  // rose
+  [0.68, 0.17, 130],  // lime
+  [0.78, 0.14, 80],   // gold
+  [0.58, 0.02, 90],   // grey
+];
+
+// Legacy hex fallback (kept for any external refs)
 export const ZONE_COLORS = [
   '#E24B4A','#D85A30','#EF9F27','#639922','#1D9E75','#378ADD','#534AB7',
   '#D4537E','#5DCAA5','#85B7EB','#AFA9EC','#F0997B','#ED93B1','#97C459',

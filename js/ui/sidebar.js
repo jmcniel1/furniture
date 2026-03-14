@@ -203,6 +203,20 @@ export function setupSidebar(persistent, transient, callbacks) {
   });
 }
 
+function updateSliderFill(slider) {
+  const pct = (slider.value - slider.min) / (slider.max - slider.min);
+  let fill = slider.parentElement.querySelector('.slider-fill');
+  if (!fill) {
+    fill = document.createElement('div');
+    fill.className = 'slider-fill';
+    slider.parentElement.insertBefore(fill, slider.parentElement.firstChild);
+  }
+  // Map 0-1 to fill width: from ~30px min to full width minus inset
+  // 3px left inset, 3px right inset = 6px total
+  fill.style.width = 'calc(' + (pct * 100) + '% - 4px)';
+  fill.style.minWidth = pct > 0 ? '22px' : '0';
+}
+
 function bindSlider(id, obj, key, min, max, onChange) {
   const slider = document.getElementById('slider-' + id);
   const readout = document.getElementById('val-' + id);
@@ -211,9 +225,11 @@ function bindSlider(id, obj, key, min, max, onChange) {
   slider.max = max;
   slider.value = obj[key];
   if (readout) readout.textContent = obj[key];
+  updateSliderFill(slider);
   slider.addEventListener('input', () => {
     obj[key] = Number(slider.value);
     if (readout) readout.textContent = slider.value;
+    updateSliderFill(slider);
     if (onChange) onChange();
   });
 }
@@ -226,9 +242,11 @@ function bindSliderFloat(id, obj, key, min, max, divisor) {
   slider.max = max;
   slider.value = Math.round(obj[key] * divisor);
   if (readout) readout.textContent = obj[key].toFixed(1);
+  updateSliderFill(slider);
   slider.addEventListener('input', () => {
     obj[key] = Number(slider.value) / divisor;
     if (readout) readout.textContent = obj[key].toFixed(1);
+    updateSliderFill(slider);
   });
 }
 
