@@ -51,7 +51,7 @@ export function createDefaultPersistentState() {
   ];
 
   return {
-    gravity: 20,
+    gravity: 3,
     bounce: 90,
     friction: 4,
     speed: 40,
