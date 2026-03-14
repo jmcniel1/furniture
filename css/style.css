@@ -210,7 +210,7 @@ body {
   text-transform: none;
   letter-spacing: 0;
   color: oklch(1 0 0);
-  padding: 8px 10px 16px;
+  padding: 8px 10px;
   font-weight: 350;
   gap: 8px;
   transition: color 0.15s;
@@ -233,6 +233,10 @@ body {
   transition: transform 0.2s;
   color: oklch(1 0 0 / 0.2);
   margin-left: auto;
+}
+
+.section[open] > .section-title {
+  padding-bottom: 10px;
 }
 
 .section[open] > .section-title::after {
