@@ -155,6 +155,9 @@ export function setupSidebar(persistent, transient, callbacks) {
   // Performance
   bindSlider('gateTime', persistent, 'gateTime', 20, 2000);
 
+  // Zone roundness
+  bindSlider('zoneRoundness', persistent, 'zoneRoundness', 0, 100);
+
   // Default note/octave for new zones
   bindSelect('defaultNote', transient, 'defaultNote');
   bindSelect('defaultOctave', transient, 'defaultOctave');

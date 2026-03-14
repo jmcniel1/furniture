@@ -93,6 +93,8 @@ export function createDefaultPersistentState() {
     arpUseRandomization: false, // apply note variation (pitch/octave/velocity) to arp
     bpm: 120,                  // tempo (web-only; VST gets this from host)
 
+    zoneRoundness: 0,          // 0-100, corner radius as % of half min dimension
+
     zones: defaultZones,
   };
 }

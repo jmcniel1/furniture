@@ -61,7 +61,7 @@ export function render(canvas, ctx, persistent, transient) {
   const container = canvas.parentElement;
   const w = container.clientWidth;
   const h = container.clientHeight;
-  const { zones, ballSize } = persistent;
+  const { zones, ballSize, zoneRoundness } = persistent;
   const { balls, zoneFlash, selectedZone, audioStarted } = transient;
   const ballRadius = 0.005 + (ballSize / 18) * 0.015;
 
@@ -95,8 +95,9 @@ export function render(canvas, ctx, persistent, transient) {
     const cx = zx + zw / 2;
     const cy = zy + zh / 2;
 
-    // Rounded rect path
-    const r = 12;
+    // Rounded rect path — roundness 0-100% of half the smaller dimension
+    const maxR = Math.min(zw, zh) / 2;
+    const r = (zoneRoundness / 100) * maxR;
     ctx.save();
     ctx.beginPath();
     ctx.roundRect(zx, zy, zw, zh, r);
