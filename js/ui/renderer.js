@@ -186,6 +186,7 @@ export function render(canvas, ctx, persistent, transient) {
     ctx.font = "450 18px 'SF Pro Display', -apple-system, sans-serif";
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillText('Click to start', w / 2, h / 2);
+    const label = 'ontouchstart' in window ? 'Tap to start' : 'Click to start';
+    ctx.fillText(label, w / 2, h / 2);
   }
 }

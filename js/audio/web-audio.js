@@ -5,6 +5,7 @@ import { midiToFrequency } from '../engine/scales.js';
 
 let audioCtx = null;
 let masterGain = null;
+let unlocked = false;
 
 // Synth parameters — mutated directly by sidebar bindings
 export const synthParams = {
@@ -25,11 +26,24 @@ let activeVoices = []; // { midi, osc, filter, gain, releaseTimer }
 
 export function initAudio() {
   if (audioCtx) return audioCtx;
-  audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  audioCtx = new (window.AudioContext || window.webkitAudioContext)({
+    sampleRate: 44100,
+  });
   masterGain = audioCtx.createGain();
   masterGain.gain.setValueAtTime(synthParams.masterVolume / 100 * 0.5, audioCtx.currentTime);
   masterGain.connect(audioCtx.destination);
   return audioCtx;
+}
+
+// Play a silent buffer to unlock iOS Safari audio — must be called from user gesture
+function unlockiOS() {
+  if (unlocked || !audioCtx) return;
+  const buf = audioCtx.createBuffer(1, 1, audioCtx.sampleRate);
+  const src = audioCtx.createBufferSource();
+  src.buffer = buf;
+  src.connect(audioCtx.destination);
+  src.start(0);
+  unlocked = true;
 }
 
 export function setMasterVolume(vol) {
@@ -43,7 +57,9 @@ export function isAudioReady() {
 }
 
 export function resumeAudio() {
-  if (audioCtx && audioCtx.state === 'suspended') {
+  if (!audioCtx) return;
+  unlockiOS();
+  if (audioCtx.state === 'suspended') {
     audioCtx.resume();
   }
 }
@@ -68,7 +84,13 @@ function cleanupVoice(voice) {
 }
 
 export function playNote(midi, velocity, gateTime) {
-  if (!audioCtx || audioCtx.state !== 'running') return;
+  if (!audioCtx) return;
+  // On iOS the context may still be resuming — nudge it but don't drop the note
+  if (audioCtx.state === 'suspended') {
+    audioCtx.resume();
+    return;
+  }
+  if (audioCtx.state !== 'running') return;
 
   const p = synthParams;
 
